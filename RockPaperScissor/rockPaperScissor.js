@@ -5,8 +5,10 @@ const restart = document.getElementById('restart');
 const modal = document.querySelector('.modal');
 const scoreboard = {
   player: 0,
-  computer: 0
+  computer: 0,
+  draw: 0
 };
+let gameCount = 0
 
 // Play game
 function play(e) {
@@ -99,6 +101,7 @@ function showWinner(winner, computerChoice) {
         computerChoice.slice(1)}</strong></p>
     `;
   } else {
+      scoreboard.draw++;
     result.innerHTML = `
       <h1>It's A Draw</h1>
       <i class="fas fa-hand-${computerChoice} fa-10x"></i>
@@ -106,6 +109,9 @@ function showWinner(winner, computerChoice) {
         computerChoice.slice(1)}</strong></p>
     `;
   }
+
+ 
+
 
   /*In if statement: If condtion checks if player is winner and displays that YOU WIN and display the icon computer choose 
   
@@ -118,6 +124,7 @@ function showWinner(winner, computerChoice) {
   score.innerHTML = `
     <p>Player: ${scoreboard.player}</p>
     <p>Computer: ${scoreboard.computer}</p>
+    <p>Draw: ${scoreboard.draw}</p>
     `;
 
   modal.style.display = 'block';
@@ -127,9 +134,11 @@ function showWinner(winner, computerChoice) {
 function restartGame() {
   scoreboard.player = 0;
   scoreboard.computer = 0;
+  scoreboard.draw = 0;
   score.innerHTML = `
     <p>Player: 0</p>
     <p>Computer: 0</p>
+    <p>Draw: 0</p>
   `;
 }
 
@@ -142,6 +151,10 @@ function clearModal(e) {
 
 // Event listeners
 choices.forEach(choice => choice.addEventListener('click', play));
+choices.forEach(choice => choice.addEventListener('click',function(){
+    gameCount += 1
+    document.getElementById('noofgames').innerHTML = ` <p id="noofgames" style="background-color: black; color: white; text-align: center; margin: auto; width: 200px;">Number of games played: ${gameCount}</p>` 
+}))
 window.addEventListener('click', clearModal);
 restart.addEventListener('click', restartGame);
- 
+
