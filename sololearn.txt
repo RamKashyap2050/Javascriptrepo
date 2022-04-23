@@ -1,0 +1,4 @@
+I’ve completed till section 60 in Sololearn, starting from creating from first Script using JavaScript where I’ve started learning from doing multiline comments and single comments to What are event handlers and what is Document Object Model and How DOM is used in JavaScript 
+I had fun solving the challenges and practice problems throughout all the 60 sections, I’ve learned how to use arrays object literals and conditional statements    
+
+Midterm GIT Repo Link :- https://github.com/RamKashyap2050/Javascriptrepo.git

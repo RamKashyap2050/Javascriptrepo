@@ -1,11 +1,16 @@
-const choices = document.querySelectorAll('.choice');
+const player1choices = document.querySelectorAll('.p1choice');
+const player2choices = document.querySelectorAll('.p2choice');
 const score = document.getElementById('score');
 const result = document.getElementById('result');
 const restart = document.getElementById('restart');
 const modal = document.querySelector('.modal');
+var player1Choice;
+var player2Choice;
+var p1Name = 'Player 1';
+var p2Name = 'Player 2';
 const scoreboard = {
-  player: 0,
-  computer: 0,
+  player1: 0,
+  player2: 0,
   draw: 0
 };
 let gameCount = 0
@@ -13,27 +18,51 @@ let gameCount = 0
 // Play game
 function play(e) {
   restart.style.display = 'inline-block';
-  const playerChoice = e.target.id;
-  const computerChoice = getComputerChoice();
-  const winner = getWinner(playerChoice, computerChoice);
-  showWinner(winner, computerChoice);
+  /* By writing this condition we replace the player 1 choice with null 
+  By doing this we give function an oppurtunity to listen to second player choice */
+  if(!player1Choice && e.target.id.indexOf("p1")==0){
+    player1Choice = e.target.id.replace("p1", "");
+    
+    //alert(player1Choice);
+  }
+
+  if(!player2Choice && e.target.id.indexOf("p2")==0){
+    player2Choice = e.target.id.replace("p2", "");
+    
+    //alert(player2Choice);
+  }  
+  //alert(player1Choice);
+  //alert(player2Choice);
+  if(player1Choice && player2Choice){
+    const winner = getWinner(player1Choice, player2Choice);
+    showWinner(winner, player1Choice, player2Choice);
+
+    gameCount= gameCount+1;
+    refreshGameCountDisplay();
+  }
 }
 
 //In function play, setting the restart button style as inline block
 //storing player choice and computer choice in getWinner function
 
 // Get computers choice
-function getComputerChoice() {
-    //rand variable is used to generate computer AI result
-  const rand = Math.random();
-  if (rand < 0.34) {
-    return 'rock';
-  } else if (rand <= 0.67) {
-    return 'paper';
-  } else {
-    return 'scissors';
-  }
-}
+// function getComputerChoice() {
+//     //rand variable is used to generate computer AI result
+//   const rand = Math.random();
+//   if (rand < 0.34) {
+//     return 'rock';
+//   } else if (rand <= 0.67) {
+//     return 'paper';
+//   } else {
+//     return 'scissors';
+//   }
+// }
+
+// function getPlayer2Choice(p1, p2){
+    
+
+//     }
+// }
 
 //math.random function is used to randomly select rock, paper or scissors
 //math.random function chooses from 0 to 1 exclusive 1 and inclusive 0
@@ -43,27 +72,27 @@ function getComputerChoice() {
 
 
 // Get game winner
-function getWinner(p, c) {
+function getWinner(p1, p2) {
     /*We write all possible scenarios of result*/
-  if (p === c) {  //when player and computer choose either rock,paper or scisccor it's a draw game 
+  if (p1 === p2) {  //when player1 and Player2 choose either rock,paper or scisccor it's a draw game 
     return 'draw';
-  } else if (p === 'rock') {
-    if (c === 'paper') {
-      return 'computer';  
+  } else if (p1 === 'rock') {
+    if (p2 === 'paper') {
+      return 'player2';  
     } else {
-      return 'player';
+      return 'player1';
     }
-  } else if (p === 'paper') {
-    if (c === 'scissors') {
-      return 'computer';
+  } else if (p1 === 'paper') {
+    if (p2 === 'scissors') {
+      return 'player2';
     } else {
-      return 'player';
+      return 'player1';
     }
-  } else if (p === 'scissors') {
-    if (c === 'rock') {
-      return 'computer';
+  } else if (p1 === 'scissors') {
+    if (p2 === 'rock') {
+      return 'player2';
     } else {
-      return 'player';
+      return 'player1';
     }
   }
 }
@@ -78,38 +107,44 @@ function getWinner(p, c) {
   */
 
 
-function showWinner(winner, computerChoice) {
+function showWinner(winner,player1Choice, player2Choice) {
 //show winner function is used to display the result of the game
-  if (winner === 'player') {
+  if (winner === 'player1') {
     // Inc player score
-    scoreboard.player++;
+    scoreboard.player1++;
     // Show modal result
     result.innerHTML = `
-      <h1 class="text-win">You Win</h1>
-      <i class="fas fa-hand-${computerChoice} fa-10x"></i>
-      <p>Computer Chose <strong>${computerChoice.charAt(0).toUpperCase() +
-        computerChoice.slice(1)}</strong></p>
+      <h1 class="text-win">${p1Name} Won</h1>
+      <i class="fas fa-hand-${player1Choice} fa-10x"></i>
+      <p>${p1Name} Chose <strong>${player1Choice.charAt(0).toUpperCase() +
+        player1Choice.slice(1)}</strong></p>
+      <p>${p2Name} Chose <strong>${player2Choice.charAt(0).toUpperCase() +
+          player2Choice.slice(1)}</strong></p>
     `;
-  } else if (winner === 'computer') {
+  } else if (winner === 'player2') {
     // Inc computer score
-    scoreboard.computer++;
+    scoreboard.player2++;
     // Show modal result
     result.innerHTML = `
-      <h1 class="text-lose">You Lose</h1>
-      <i class="fas fa-hand-${computerChoice} fa-10x"></i>
-      <p>Computer Chose <strong>${computerChoice.charAt(0).toUpperCase() +
-        computerChoice.slice(1)}</strong></p>
+      <h1 class="text-win">${p2Name} Won</h1>
+      <i class="fas fa-hand-${player2Choice} fa-10x"></i>
+      <p>${p1Name} Chose <strong>${player1Choice.charAt(0).toUpperCase() +
+        player1Choice.slice(1)}</strong></p>
+      <p>${p2Name} Chose <strong>${player2Choice.charAt(0).toUpperCase() +
+          player2Choice.slice(1)}</strong></p>
     `;
   } else {
       scoreboard.draw++;
     result.innerHTML = `
       <h1>It's A Draw</h1>
-      <i class="fas fa-hand-${computerChoice} fa-10x"></i>
-      <p>Computer Chose <strong>${computerChoice.charAt(0).toUpperCase() +
-        computerChoice.slice(1)}</strong></p>
+      <i class="fas fa-hand-'It\'s A Draw' fa-10x"></i>
+      <p>${p1Name} Chose <strong>${player1Choice.charAt(0).toUpperCase() +
+        player1Choice.slice(1)}</strong></p>
+      <p>${p2Name} Chose <strong>${player2Choice.charAt(0).toUpperCase() +
+          player2Choice.slice(1)}</strong></p>
     `;
   }
-
+  resetPlayerChoice();
  
 
 
@@ -121,25 +156,80 @@ function showWinner(winner, computerChoice) {
   */ 
 
   // Show score
-  score.innerHTML = `
-    <p>Player: ${scoreboard.player}</p>
-    <p>Computer: ${scoreboard.computer}</p>
-    <p>Draw: ${scoreboard.draw}</p>
-    `;
-
+  setScoreContent();
   modal.style.display = 'block';
+}
+
+function addListeners(){
+  /*This function is used to read input dynamically from user using the id of input tag of player 1 and player 2 
+    and change their names dynamically*/
+  p1namedisplay.addEventListener('click', function(){
+      
+    document.getElementById('p1namedisplay').style.display = 'none';
+    document.getElementById('p1name').style.display = 'inline';
+});
+/*These change functions are used to change the name in the middle of ythe game 
+without actually refreshing the game */ 
+p1name.addEventListener('change', function(){
+if(document.getElementById('p1name').value){
+  document.getElementById('p1namedisplay').innerHTML = document.getElementById('p1name').value;
+  p1Name = document.getElementById('p1name').value;    
+}
+document.getElementById('p1namedisplay').style.display = 'inline';    
+document.getElementById('p1name').style.display = 'none';
+
+});
+// The same goes with player 2 name too
+p2namedisplay.addEventListener('click', function(){
+    
+document.getElementById('p2namedisplay').style.display = 'none';
+document.getElementById('p2name').style.display = 'inline';
+});
+
+p2name.addEventListener('change', function(){
+
+if(document.getElementById('p2name').value){
+  document.getElementById('p2namedisplay').innerHTML = document.getElementById('p2name').value;
+  p2Name = document.getElementById('p2name').value;    
+}
+document.getElementById('p2namedisplay').style.display = 'inline';    
+document.getElementById('p2name').style.display = 'none';
+
+
+});
 }
 
 // Restart game
 function restartGame() {
-  scoreboard.player = 0;
-  scoreboard.computer = 0;
+  scoreboard.player1 = 0;
+  scoreboard.player2 = 0;
   scoreboard.draw = 0;
+  setScoreContent();
+  
+  resetPlayerChoice();
+  gameCount = 0;
+  refreshGameCountDisplay();
+}
+
+function setScoreContent(){
   score.innerHTML = `
-    <p>Player: 0</p>
-    <p>Computer: 0</p>
-    <p>Draw: 0</p>
+  <p><span id="p1namedisplay">${p1Name}</span><input type="text" id="p1name" style="display:none;">: ${scoreboard.player1}</p>
+  <p><span id="p2namedisplay">${p2Name}</span><input type="text" id="p2name" style="display:none;">: ${scoreboard.player2}</p>     
+  <p>Draw: ${scoreboard.draw}</p>
   `;
+  addListeners();
+}
+
+function refreshGameCountDisplay(){
+  document.getElementById('noofgames').innerHTML = ` <p id="noofgames" style="background-color: black; color: white; text-align: center; margin: auto; width: 200px;">Number of games played:  ${gameCount} </p>` 
+  
+}
+
+function resetPlayerChoice(){
+  player1Choice = '';
+  player2Choice = '';
+ // alert('player1Choice='+player1Choice+', player2Choice='+player2Choice);
+ // alert('called playerchoice reset');
 }
 
 // Clear modal
@@ -149,12 +239,27 @@ function clearModal(e) {
   }
 }
 
+
+
 // Event listeners
-choices.forEach(choice => choice.addEventListener('click', play));
-choices.forEach(choice => choice.addEventListener('click',function(){
-    gameCount += 1
-    document.getElementById('noofgames').innerHTML = ` <p id="noofgames" style="background-color: black; color: white; text-align: center; margin: auto; width: 200px;">Number of games played: ${gameCount}</p>` 
-}))
+player1choices.forEach(p1choice => p1choice.addEventListener('click', play));
+player2choices.forEach(p2choice => p2choice.addEventListener('click', play));
+addListeners();
+
+//player1choices.forEach(p1choice,p2choice => p1choice,p2choice.addEventListener('click',function(){
+//    gameCount += 1
+//    document.getElementById('noofgames').innerHTML = ` <p id="noofgames" style="background-color: black; color: white; text-align: center; margin: auto; width: 200px;">Number of games played:  ${gameCount} </p>` 
+//}))
+// array1.forEach(element => console.log(element));
+// function choice(){
+//     const p1choice = addEventListener('click')
+//     const p2choice = addEventListener('click')
+//     choice().forEach(p1choice,p2choice => {
+//         play()
+//     });
+// }
+
+
 window.addEventListener('click', clearModal);
 restart.addEventListener('click', restartGame);
 
